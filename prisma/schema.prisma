@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Exam {
+  id           String     @id @default(uuid())
+  title        String
+  year         Int
+  organization String
+  institution  String
+  level        String
+  sourceUrl    String?
+  examPdfUrl   String?
+  answerKeyUrl String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  questions    Question[]
+
+  @@map("exams")
+}
+
+model Question {
+  id           String        @id @default(uuid())
+  statement    String
+  organization String
+  subject      String
+  examId       String?
+  exam         Exam?         @relation(fields: [examId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  alternatives Alternative[]
+
+  @@map("questions")
+}
+
+model Alternative {
+  id         String   @id @default(uuid())
+  text       String
+  isCorrect  Boolean  @default(false)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("alternatives")
+}
+
+model Simulation {
+  id         String             @id @default(uuid())
+  studentId  String
+  title      String
+  createdAt  DateTime           @default(now())
+  finishedAt DateTime?
+  answers    SimulationAnswer[]
+
+  @@map("simulations")
+}
+
+model SimulationAnswer {
+  id            String     @id @default(uuid())
+  simulationId  String
+  simulation    Simulation @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  questionId    String
+  alternativeId String
+  createdAt     DateTime   @default(now())
+
+  @@unique([simulationId, questionId])
+  @@map("simulation_answers")
+}
