@@ -4,10 +4,20 @@
   "description": "Scraper de provas de concursos",
   "main": "dist/main.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/main.js",
-    "dev": "ts-node -r tsconfig-paths/register src/main.ts",
-    "lint": "eslint src/**/*.ts"
+    "build": "tsup-node src --clean --out-dir dist",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "test": "vitest run -c vitest.unit.config.ts",
+    "test:watch": "vitest -c vitest.unit.config.ts",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "vitest run -c vitest.e2e.config.ts",
+    "test:e2e:watch": "vitest -c vitest.e2e.config.ts",
+    "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
+    "test:install-prisma-environment": "npm link vitest-environment-prisma",
+    "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "postinstall": "prisma generate"
   },
   "keywords": [
     "scraper",
@@ -18,17 +28,25 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@types/pg": "^8.15.6",
     "ts-node": "^10.9.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.0"
   },
   "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "@fastify/jwt": "^10.0.0",
+    "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "axios": "^1.6.0",
     "axios-retry": "^4.0.0",
     "cheerio": "^1.0.0-rc.12",
     "dotenv": "^17.2.3",
+    "fastify": "^5.6.2",
     "p-limit": "^5.0.0",
-    "prisma": "^7.1.0"
+    "pg": "^8.16.3",
+    "prisma": "^7.1.0",
+    "tsx": "^4.21.0",
+    "zod": "^4.1.13"
   }
 }

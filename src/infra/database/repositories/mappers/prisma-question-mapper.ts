@@ -1,6 +1,7 @@
 import { Question as PrismaQuestion, Alternative as PrismaAlternative } from '@prisma/client'
 import { UniqueEntityId } from '@/core/entities'
-import { Question, Alternative, AlternativeList } from '@/domain/entities'
+import { Question, AlternativeList } from '@/domain/entities'
+import { PrismaAlternativeMapper } from './prisma-alternative-mapper'
 
 type PrismaQuestionWithAlternatives = PrismaQuestion & {
   alternatives: PrismaAlternative[]
@@ -8,18 +9,7 @@ type PrismaQuestionWithAlternatives = PrismaQuestion & {
 
 export class PrismaQuestionMapper {
   static toDomain(raw: PrismaQuestionWithAlternatives): Question {
-    const alternatives = raw.alternatives.map(alt =>
-      Alternative.create(
-        {
-          questionId: new UniqueEntityId(alt.questionId),
-          text: alt.text,
-          isCorrect: alt.isCorrect,
-          createdAt: alt.createdAt,
-          updatedAt: alt.updatedAt,
-        },
-        new UniqueEntityId(alt.id)
-      )
-    )
+    const alternatives = raw.alternatives.map(PrismaAlternativeMapper.toDomain)
 
     return Question.create(
       {

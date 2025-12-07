@@ -1,3 +1,4 @@
 export type { IExamRepository } from './exam-repository'
 export type { IQuestionRepository } from './question-repository'
 export type { ISimulationRepository } from './simulation-repository'
+export type { IAlternativeRepository } from './alternative-repository'
