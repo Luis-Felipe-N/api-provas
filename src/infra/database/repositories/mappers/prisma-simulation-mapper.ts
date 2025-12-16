@@ -1,6 +1,6 @@
 import { Simulation as PrismaSimulation, SimulationAnswer as PrismaSimulationAnswer } from '@prisma/client'
-import { UniqueEntityId } from '@/core/entities'
-import { Simulation, SimulationAnswerList, SimulationQuestionList } from '@/domain/entities'
+import { UniqueEntityId } from '../../../../core/entities'
+import { Simulation, SimulationAnswerList, SimulationQuestionList } from '../../../../domain/entities'
 
 type PrismaSimulationWithAnswers = PrismaSimulation & {
   answers: PrismaSimulationAnswer[]

@@ -1,11 +1,12 @@
-import { ScrapeExamsUseCase } from '@/application/use-cases'
-import { PrismaExamRepository, PrismaQuestionRepository, PrismaAlternativeRepository } from '@/infra/database'
-import { PciConcursosScraper } from '@/infra/scrapers'
+
+import { ScrapeExamsUseCase } from "../../../application/use-cases/scrape-exams"
+import { ExamProcessorService } from "../../../domain/services/exam-processor-service"
+import { PrismaAlternativeRepository, PrismaExamRepository, PrismaQuestionRepository } from "../../database"
 
 export function makeExamScraperUseCase() {
-  const examRepository = new PrismaExamRepository()
-  const questionRepository = new PrismaQuestionRepository()
   const alternativeRepository = new PrismaAlternativeRepository()
-  const scraper = new PciConcursosScraper()
-  return new ScrapeExamsUseCase(scraper, examRepository, questionRepository, alternativeRepository)
+  const questionRepository = new PrismaQuestionRepository(alternativeRepository)
+  const examRepository = new PrismaExamRepository(questionRepository)
+  const examProcessorService = new ExamProcessorService()
+  return new ScrapeExamsUseCase(examRepository, examProcessorService)
 }

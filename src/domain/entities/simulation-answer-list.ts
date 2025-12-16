@@ -1,4 +1,4 @@
-import { UniqueEntityId, WatchedList } from '@/core/entities'
+import { UniqueEntityId, WatchedList } from '../../core/entities'
 
 export interface SimulationAnswerItem {
   questionId: UniqueEntityId

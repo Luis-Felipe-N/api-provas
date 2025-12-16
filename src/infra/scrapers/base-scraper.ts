@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import axiosRetry from 'axios-retry'
 import pLimit from 'p-limit'
 import { scraperSettings } from '../config/scraper-settings'
+import { RawExamDTO } from '../../application/dtos/raw-exam-dto'
 import { ScrapedExam, IExamScraper } from './exam-scraper.interface'
 
 export abstract class BaseScraper implements IExamScraper {
@@ -60,17 +61,33 @@ export abstract class BaseScraper implements IExamScraper {
     html: string
   ): { examUrl: string | null; answerKeyUrl: string | null }
 
-  abstract scrapeAll(baseUrl: string): AsyncGenerator<ScrapedExam, void, unknown>
+  abstract scrapeAll(baseUrl: string): AsyncGenerator<RawExamDTO, void, unknown>
 
-  async enrichExam(exam: ScrapedExam): Promise<ScrapedExam> {
+  async enrichExam(exam: ScrapedExam): Promise<RawExamDTO> {
     try {
       const html = await this.fetch(exam.pageUrl)
       const { examUrl, answerKeyUrl } = this.parseDownloadPage(html)
-      exam.download.examUrl = examUrl
-      exam.download.answerKeyUrl = answerKeyUrl
+
+      return {
+        title: exam.name,
+        year: parseInt(exam.year) || 0,
+        organization: exam.organization,
+        institution: exam.institution,
+        level: exam.level,
+        sourceUrl: exam.pageUrl,
+        pdfUrl: examUrl || undefined,
+        answerKeyUrl: answerKeyUrl || undefined
+      }
     } catch (error) {
       console.error(`Failed to enrich exam ${exam.name}:`, error)
+      return {
+        title: exam.name,
+        year: parseInt(exam.year) || 0,
+        organization: exam.organization,
+        institution: exam.institution,
+        level: exam.level,
+        sourceUrl: exam.pageUrl,
+      }
     }
-    return exam
   }
 }

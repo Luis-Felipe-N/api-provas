@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio'
 import { scraperSettings } from '../config/scraper-settings'
 import { ScrapedExam } from './exam-scraper.interface'
 import { BaseScraper } from './base-scraper'
+import { RawExamDTO } from '../../application/dtos/raw-exam-dto'
 
 export class PciConcursosScraper extends BaseScraper {
   parseExamList(html: string): ScrapedExam[] {
@@ -47,9 +48,32 @@ export class PciConcursosScraper extends BaseScraper {
     const $ = cheerio.load(html)
     let examUrl: string | null = null
     let answerKeyUrl: string | null = null
+    const baseUrl = 'https://www.pciconcursos.com.br'
 
-    $('a[href$=".pdf"]').each((_, link) => {
-      const href = $(link).attr('href') || ''
+    const toAbsoluteUrl = (href: string | null | undefined) => {
+      if (!href) return null
+      if (/^https?:/i.test(href)) {
+        return href
+      }
+
+      try {
+        return new URL(href, baseUrl).toString()
+      } catch {
+        return href
+      }
+    }
+
+    const downloadLinks = $('a[href$=".pdf"]').filter((_, link) => {
+      const text = $(link).text().toLowerCase()
+      const parentText = $(link).parent().text().toLowerCase()
+      return text.includes('baixar') || parentText.includes('baixar')
+    })
+
+    const candidates = downloadLinks.length ? downloadLinks : $('a[href$=".pdf"]')
+
+    candidates.each((_, link) => {
+      const href = toAbsoluteUrl($(link).attr('href'))
+      if (!href) return
 
       if (href.toLowerCase().includes('gabarito')) {
         if (!answerKeyUrl) {
@@ -58,12 +82,16 @@ export class PciConcursosScraper extends BaseScraper {
       } else if (!examUrl) {
         examUrl = href
       }
+
+      if (examUrl && answerKeyUrl) {
+        return false
+      }
     })
 
     return { examUrl, answerKeyUrl }
   }
 
-  async *scrapeAll(baseUrl: string): AsyncGenerator<ScrapedExam, void, unknown> {
+  async *scrapeAll(baseUrl: string): AsyncGenerator<RawExamDTO, void, unknown> {
     let page = 1
 
     while (true) {
@@ -80,7 +108,8 @@ export class PciConcursosScraper extends BaseScraper {
         }
 
         for (const exam of exams) {
-          yield exam
+          const enriched = await this.enrichExam(exam)
+          yield enriched
         }
 
         page++

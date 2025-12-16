@@ -1,9 +1,18 @@
 import { Exam as PrismaExam } from '@prisma/client'
-import { UniqueEntityId } from '@/core/entities'
-import { Exam } from '@/domain/entities'
+import { UniqueEntityId } from '../../../../core/entities'
+import { Exam, QuestionList } from '../../../../domain/entities'
+import { PrismaQuestionMapper, type PrismaQuestionWithAlternatives } from './prisma-question-mapper'
+
+type PrismaExamWithRelations = PrismaExam & {
+  questions?: PrismaQuestionWithAlternatives[]
+}
 
 export class PrismaExamMapper {
-  static toDomain(raw: PrismaExam): Exam {
+  static toDomain(raw: PrismaExamWithRelations): Exam {
+    const questionEntities = raw.questions
+      ? raw.questions.map(PrismaQuestionMapper.toDomain)
+      : []
+
     return Exam.create(
       {
         title: raw.title,
@@ -14,6 +23,7 @@ export class PrismaExamMapper {
         sourceUrl: raw.sourceUrl,
         originalPdfUrl: raw.examPdfUrl,
         answerKeyUrl: raw.answerKeyUrl,
+        questions: new QuestionList(questionEntities),
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },

@@ -23,7 +23,6 @@ const sanitizeText = (value: string) =>
     .replace(/pcimarkpci\s*\S+/gi, "")
     .replace(/www\.pciconcursos\.com\.br/gi, "")
     .replace(/Página\s*\d+\s*de\s*\d+/gi, "")
-    // Remove quebras de linha no meio de frases, mas tenta preservar entre blocos distantes
     .replace(/([A-ZÀ-Ÿ])\n([A-ZÀ-Ÿ])/g, "$1$2");
 
 export class PdfExtractor {
@@ -125,6 +124,7 @@ export class PdfExtractor {
     const cargoPatterns: Array<[RegExp, "m_pattern" | "tipo" | "prova" | "uppercase"]> = [
       [/(?:M(\d+)\s*[-–]\s*([A-ZÀ-Ÿ][A-Za-zÀ-ÿº\s\-–]+?))(?:\n|PROVA)/gi, "m_pattern"],
       [/([A-ZÀ-Ÿ][A-Za-zÀ-ÿº\s\-–]+(?:Militar|Bombeiro|Polícia|Civil|Perito|Tenente|Soldado|Oficial|Agente|Contador|Analista|Técnico|Escriturário|Assistente|Auxiliar|Administrador|Engenheiro|Advogado|Médico|Enfermeiro|Professor|Fiscal|Auditor|Delegado|Escrivão|Inspetor|Motorista|Operador|Secretário|Gestor|Coordenador|Supervisor|Gerente|Diretor)[A-Za-zÀ-ÿº\s\-–]*)[–\-]\s*Tipo\s*(\d+)/gi, "tipo"],
+      [/([0-9ºªA-Za-zÀ-ÿ\s\-–]+?)\s*[-–]\s*TIPO\s*(\d+)/gi, "tipo"],
       [/(?:GABARITO\s*(?:OFICIAL|DEFINITIVO|PRELIMINAR)?)\s*\n?\s*([A-ZÀ-Ÿ][A-Za-zÀ-ÿº\s\-–]+?)\s+Prova\s*[-–]?\s*([A-Z0-9]+)/gi, "prova"],
       [/\n\s*([A-ZÀ-Ÿ][A-ZÀ-Ÿ\s\-–]+(?:ÁRIO|ISTA|OR|ENTE|IVO|ICO|IRO|ADO|IDO|OSO|ÃO|EIRO|ADOR)[A-ZÀ-Ÿ\s\-–]*)\s*\n\s*(?=\d+\s*[-–:]?\s*[A-E])/g, "uppercase"],
     ];

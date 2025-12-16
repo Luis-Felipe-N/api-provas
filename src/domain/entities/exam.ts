@@ -1,5 +1,5 @@
-import { Entity, UniqueEntityId } from '@/core/entities'
-import { Optional } from '@/core/types'
+import { Entity, UniqueEntityId } from '../../core/entities'
+import { Optional } from '../../core/types'
 import { QuestionList } from './question-list'
 
 export interface ExamProps {
@@ -72,7 +72,7 @@ export class Exam extends Entity<ExamProps> {
   }
 
   get hasQuestions() {
-    return this.props.questions.currentItems.length > 0
+    return this.props.questions.getItems().length > 0
   }
 
   private touch() {

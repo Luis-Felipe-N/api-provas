@@ -1,6 +1,6 @@
 import { Alternative as PrismaAlternative } from '@prisma/client'
-import { UniqueEntityId } from '@/core/entities'
-import { Alternative } from '@/domain/entities'
+import { UniqueEntityId } from '../../../../core/entities'
+import { Alternative } from '../../../../domain/entities'
 
 export class PrismaAlternativeMapper {
   static toDomain(raw: PrismaAlternative): Alternative {

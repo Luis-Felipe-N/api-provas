@@ -1,6 +1,6 @@
 import { prisma } from '../prisma'
-import { Simulation } from '@/domain/entities'
-import { ISimulationRepository } from '@/domain/repositories'
+import { Simulation } from '../../../domain/entities'
+import { ISimulationRepository } from '../../../domain/repositories'
 import { PrismaSimulationMapper } from './mappers/prisma-simulation-mapper'
 
 export class PrismaSimulationRepository implements ISimulationRepository {

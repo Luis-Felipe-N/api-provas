@@ -1,4 +1,4 @@
-import { WatchedList } from '@/core/entities'
+import { WatchedList } from '../../core/entities'
 import { Alternative } from './alternative'
 
 export class AlternativeList extends WatchedList<Alternative> {

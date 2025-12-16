@@ -1,0 +1,66 @@
+@host = http://localhost:3333
+@token = <PASTE_VALID_JWT>
+
+###
+# Health check (server running?)
+GET {{host}}/
+
+###
+# Unauthorized scraper request (expect 401)
+POST {{host}}/scraper
+Content-Type: application/json
+
+{
+  "source": "PCICONCURSOS",
+  "urls": [
+    "https://www.pciconcursos.com.br/provas"
+  ]
+}
+
+###
+# Happy-path scraper request (requires Bearer token)
+POST {{host}}/scraper
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "source": "PCICONCURSOS",
+  "urls": [
+    "https://www.pciconcursos.com.br/provas/analista-de-tecnologia-da-informacao" 
+  ]
+}
+
+###
+# Invalid payload example (missing URLs)
+POST {{host}}/scraper
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "source": "PCICONCURSOS",
+  "urls": ["https://www.pciconcursos.com.br/provas/analista-de-tecnologia-da-informacao"]
+}
+
+###
+# Fetch scraped exams (requires Bearer token)
+GET {{host}}/exams
+Authorization: Bearer {{token}}
+
+###
+# Fetch scraped exams with filters (requires Bearer token)
+GET {{host}}/exams?institution=Federal%20University&year=2022
+Authorization: Bearer {{token}}
+
+###
+# Fetch a specific exam by ID (requires Bearer token)
+GET {{host}}/exams/12345
+Authorization: Bearer {{token}} 
+
+###
+# Unauthorized exam fetch (expect 401)
+GET {{host}}/exams/12345  
+
+###
+# Fetch questions for a specific exam (requires Bearer token)
+GET {{host}}/exams/12345/questions
+Authorization: Bearer {{token}}

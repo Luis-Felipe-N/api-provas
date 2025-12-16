@@ -1,9 +1,9 @@
 import { Question as PrismaQuestion, Alternative as PrismaAlternative } from '@prisma/client'
-import { UniqueEntityId } from '@/core/entities'
-import { Question, AlternativeList } from '@/domain/entities'
+import { UniqueEntityId } from '../../../../core/entities'
+import { Question, AlternativeList } from '../../../../domain/entities'
 import { PrismaAlternativeMapper } from './prisma-alternative-mapper'
 
-type PrismaQuestionWithAlternatives = PrismaQuestion & {
+export type PrismaQuestionWithAlternatives = PrismaQuestion & {
   alternatives: PrismaAlternative[]
 }
 

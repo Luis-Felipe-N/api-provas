@@ -1,5 +1,5 @@
-import { Entity, UniqueEntityId } from '@/core/entities'
-import { Optional } from '@/core/types'
+import { Entity, UniqueEntityId } from '../../core/entities'
+import { Optional } from '../../core/types'
 
 export interface AlternativeProps {
   questionId: UniqueEntityId

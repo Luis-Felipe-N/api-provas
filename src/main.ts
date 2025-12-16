@@ -1,7 +1,8 @@
-import { ScrapeExamsUseCase } from '@/application/use-cases'
-import { PciConcursosScraper } from '@/infra/scrapers'
-import { PrismaExamRepository } from '@/infra/database/repositories'
-import { prisma } from '@/infra/database/prisma'
+
+import { PciConcursosScraper } from './infra/scrapers'
+import { PrismaAlternativeRepository, PrismaExamRepository, PrismaQuestionRepository } from './infra/database/repositories'
+import { prisma } from './infra/database/prisma'
+import { ScrapeExamsUseCase } from './application/use-cases/scrape-exams'
 
 interface ExamSource {
   name: string
@@ -17,8 +18,14 @@ const EXAM_SOURCES: ExamSource[] = [
 
 async function main(): Promise<void> {
   const scraper = new PciConcursosScraper()
-  const examRepository = new PrismaExamRepository()
-  const scrapeExamsUseCase = new ScrapeExamsUseCase(scraper, examRepository)
+  const alternativeRepository = new PrismaAlternativeRepository()
+  const questionRepository = new PrismaQuestionRepository(alternativeRepository)
+  const examRepository = new PrismaExamRepository(questionRepository)
+  const scrapeExamsUseCase = new ScrapeExamsUseCase(
+    examRepository,
+    questionRepository,
+    alternativeRepository,
+  )
 
   for (const source of EXAM_SOURCES) {
     console.log(`\n🚀 Starting scrape from: ${source.name}`)

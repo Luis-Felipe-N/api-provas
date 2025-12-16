@@ -1,11 +1,13 @@
-import { Entity, UniqueEntityId } from '@/core/entities'
-import { Optional } from '@/core/types'
+import { Entity, UniqueEntityId } from '../../core/entities'
+import { Optional } from '../../core/types'
 import { AlternativeList } from './alternative-list'
 
 export interface QuestionProps {
   statement: string
   organization: string
   subject: string
+  difficulty?: 'Fácil' | 'Médio' | 'Difícil'
+  explanation?: string
   alternatives: AlternativeList
   createdAt: Date
   updatedAt?: Date | null
@@ -46,6 +48,14 @@ export class Question extends Entity<QuestionProps> {
       .filter(item => item.isCorrect).length
 
     return correctCount === 1
+  }
+
+  get difficulty() {
+    return this.props.difficulty
+  }
+
+  get explanation() {
+    return this.props.explanation
   }
 
   set statement(statement: string) {

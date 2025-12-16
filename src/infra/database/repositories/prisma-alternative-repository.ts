@@ -1,6 +1,6 @@
 import { prisma } from '../prisma'
-import { Alternative } from '@/domain/entities'
-import { IAlternativeRepository } from '@/domain/repositories'
+import { Alternative } from '../../../domain/entities'
+import { IAlternativeRepository } from '../../../domain/repositories'
 import { PrismaAlternativeMapper } from './mappers/prisma-alternative-mapper'
 
 export class PrismaAlternativeRepository implements IAlternativeRepository {

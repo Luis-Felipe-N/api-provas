@@ -1,4 +1,4 @@
-import { PrismaAlternativeRepository, PrismaExamRepository, PrismaQuestionRepository } from '../../database'
+import { PrismaAlternativeRepository, PrismaExamRecordRepository, PrismaExamRepository, PrismaQuestionRepository } from '../../database'
 
 export function makeQuestionRepository() {
   const alternativeRepository = new PrismaAlternativeRepository()
@@ -7,4 +7,8 @@ export function makeQuestionRepository() {
 
 export function makeExamRepository() {
   return new PrismaExamRepository(makeQuestionRepository())
+}
+
+export function makeExamRecordRepository() {
+  return new PrismaExamRecordRepository()
 }

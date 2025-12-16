@@ -1,3 +1,5 @@
+import { RawExamDTO } from '../../application/dtos/raw-exam-dto'
+
 export interface ScrapedExam {
   pageUrl: string
   name: string
@@ -12,6 +14,5 @@ export interface ScrapedExam {
 }
 
 export interface IExamScraper {
-  scrapeAll(baseUrl: string): AsyncGenerator<ScrapedExam, void, unknown>
-  enrichExam(exam: ScrapedExam): Promise<ScrapedExam>
+  scrapeAll(baseUrl: string): AsyncGenerator<RawExamDTO, void, unknown>
 }
